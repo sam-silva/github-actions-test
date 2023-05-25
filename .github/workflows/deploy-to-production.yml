@@ -18,6 +18,17 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+      
+      - name: check directory
+        run: ls -la
+
+      - name: Decrypt large secret
+        run: ./.github/decrypt_secret.sh
+        env: 
+          SECRET_PASSPHRASE: ${{ secrets.SECRET_PASSPHRASE }}
+      
+      - name: Test printing your secret (Remove this step in production)
+        run: cat $HOME/secrets/key
 
       - name: Log in to the Container registry
         # uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
@@ -41,12 +52,4 @@ jobs:
 
       - name: push to registry 
         run: docker push ${{ env.REGISTRY }}/$IMAGE_NAME:latest
-      
-      - name: Decrypt large secret
-        run: ./.github/decrypt_secret.sh
-        env: 
-          SECRET_PASSPHRASE: ${{ secrets.SECRET_PASSPHRASE }}
-      
-      - name: Test printing your secret (Remove this step in production)
-        run: cat $HOME/secrets/key
     
