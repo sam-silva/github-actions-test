@@ -11,6 +11,7 @@ env:
 jobs:
   build-and-push-image:
     runs-on: ubuntu-latest
+    environment: production
     permissions:
       contents: read
       packages: write
@@ -25,6 +26,15 @@ jobs:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: putting the enviroment for container
+        run: | 
+          echo "NEXT_PUBLIC_PRODUCTION_API_URL=${{ vars.NEXT_PUBLIC_PRODUCTION_API_URL }}" >> .env.production
+          echo "NEXT_PUBLIC_PRODUCTION_DOMAIN_URL=${{ vars.NEXT_PUBLIC_PRODUCTION_DOMAIN_URL }}" >> .env.production
+          echo "NEXT_PUBLIC_REACT_ENV=${{ vars.NEXT_PUBLIC_REACT_ENV }}" >> .env.production
+
+      - name: echo the .env.production file
+        run: cat .env.production
 
       - name: build image 
         run: docker build -t ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest -f ./docker/production.dockerfile .
@@ -32,11 +42,11 @@ jobs:
       - name: push to registry 
         run: docker push ${{ env.REGISTRY }}/$IMAGE_NAME:latest
       
+      - name: Decrypt large secret
+        run: ./.github/decrypt_secret.sh
+        env: 
+          SECRET_PASSPHRASE: ${{ secrets.SECRET_PASSPHRASE }}
       
-      # - name: build the docker image 
-      #   uses: docker/build-push-action@v4
-      #   with:
-      #     context: .
-      #     file: ./docker/production.dockerfile
-      #     push: true
-      #     tags: frontent:latest
+      - name: Test printing your secret (Remove this step in production)
+        run: cat $HOME/secrets/key
+    
