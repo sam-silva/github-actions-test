@@ -18,9 +18,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-      
-      - name: check directory
-        run: ls -la
 
       - name: Decrypt large secret
         run: ./.github/decrypt_secret.sh
