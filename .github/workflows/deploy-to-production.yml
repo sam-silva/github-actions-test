@@ -36,14 +36,8 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: push to registry 
-        run: docker push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest   
+        run: docker push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
 
-  deploy-image:
-    runs-on: ubuntu-latest
-    environment: production
-    permissions:
-      contents: read
-    steps:
       - name: Deploy to production
         uses: fifsky/ssh-action@master
         with:
@@ -53,5 +47,5 @@ jobs:
             docker compose pull && docker compose up -d --force-recreate
           host: ${{ vars.SERVER_IP }}
           user: ${{ vars.SERVER_USER }}
-          key: ${{ secrets.SECRET_KEY }}   
+          key: ${{ secrets.SECRET_KEY }}      
     
