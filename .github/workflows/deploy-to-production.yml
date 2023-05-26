@@ -33,7 +33,7 @@ jobs:
             ls -a
           host: ${{ vars.SERVER_IP }}
           user: ${{ vars.SERVER_USER }}
-          key: $HOME/secrets/key
+          key: ${{ secrets.SECRET_KEY }}
       
       # - name: Adding Known Hosts
       #   run: ssh-keyscan -H ${{ secrets.SERVER_IP }} >> ~/.ssh/known_hosts
