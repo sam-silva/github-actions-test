@@ -46,9 +46,9 @@ jobs:
 
       - name: Deploy to production
         run: | 
-        chmod og= $HOME/secrets/key
-        ssh -o StrictHostKeyChecking=no -i $HOME/secrets/key ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} "docker login -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }} ${{ env.REGISTRY }}"
-        ssh -o StrictHostKeyChecking=no -i $HOME/secrets/key ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} "cd ${{ vars.SERVER_PATH }} && docker-compose pull && docker-compose up -d --force-recreate"
+          chmod og= $HOME/secrets/key
+          ssh -o StrictHostKeyChecking=no -i $HOME/secrets/key ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} "docker login -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }} ${{ env.REGISTRY }}"
+          ssh -o StrictHostKeyChecking=no -i $HOME/secrets/key ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} "cd ${{ vars.SERVER_PATH }} && docker-compose pull && docker-compose up -d --force-recreate"
 
 
     
