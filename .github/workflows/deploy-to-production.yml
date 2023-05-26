@@ -24,22 +24,19 @@ jobs:
         run: | 
           echo "${{ secrets.SECRET_KEY }}"
 
-      - name: put ssh value in file
-        run: |
-          echo "${{ secrets.SECRET_KEY }}" > $HOME/key
-          chmod og= $HOME/key
+      - name: Decrypt large secret
+        run: ./.github/decrypt_secret.sh
+        env: 
+          SECRET_PASSPHRASE: ${{ secrets.SECRET_PASSPHRASE }}
       
-
       - name: Adding Known Hosts
         run: ssh-keyscan -H ${{ secrets.SERVER_IP }} >> ~/.ssh/known_hosts
 
       - name: ssh to server
-        run: |
-          ssh -o StrictHostKeyChecking=no -i $HOME/key ${{ env.SSH_CONNECTION }} "echo 'hello world'"
-      # - name: Decrypt large secret
-      #   run: ./.github/decrypt_secret.sh
-      #   env: 
-      #     SECRET_PASSPHRASE: ${{ secrets.SECRET_PASSPHRASE }}
+        run: | 
+          chmod og= $HOME/secrets/key
+          ssh -o StrictHostKeyChecking=no -i $HOME/secrets/key ${{ env.SSH_CONNECTION }} "docker login -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }} ${{ env.REGISTRY }}"
+      
 
       # - name: Log in to the Container registry
 
@@ -61,11 +58,11 @@ jobs:
       # - name: push to registry 
       #   run: docker push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
 
-      # - name: Deploy to production
-      #   run: | 
-      #     chmod og= $HOME/secrets/key
-      #     ssh -o StrictHostKeyChecking=no -i $HOME/secrets/key ${{ env.SSH_CONNECTION }} "docker login -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }} ${{ env.REGISTRY }}"
-      #     ssh -o StrictHostKeyChecking=no -i $HOME/secrets/key ${{ env.SSH_CONNECTION }} "cd ${{ vars.SERVER_PATH }} && docker-compose pull && docker-compose up -d --force-recreate"
+      - name: Deploy to production
+        run: | 
+          chmod og= $HOME/secrets/key
+          ssh -o StrictHostKeyChecking=no -i $HOME/secrets/key ${{ env.SSH_CONNECTION }} "docker login -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }} ${{ env.REGISTRY }}"
+          ssh -o StrictHostKeyChecking=no -i $HOME/secrets/key ${{ env.SSH_CONNECTION }} "cd ${{ vars.SERVER_PATH }} && docker-compose pull && docker-compose up -d --force-recreate"
 
 
     
