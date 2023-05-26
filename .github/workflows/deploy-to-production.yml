@@ -7,6 +7,7 @@ on:
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
+  SSH_CONNECTION: ${{ vars.SERVER_USER }}@${{ vars.SERVER_IP }}
 
 jobs:
   build-and-push-image:
@@ -47,8 +48,8 @@ jobs:
       - name: Deploy to production
         run: | 
           chmod og= $HOME/secrets/key
-          ssh -o StrictHostKeyChecking=no -i $HOME/secrets/key ${{ vars.SERVER_USER }}@${{ vars.SERVER_IP }} "docker login -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }} ${{ env.REGISTRY }}"
-          ssh -o StrictHostKeyChecking=no -i $HOME/secrets/key ${{ vars.SERVER_USER }}@${{ vars.SERVER_IP }} "cd ${{ vars.SERVER_PATH }} && docker-compose pull && docker-compose up -d --force-recreate"
+          ssh -o StrictHostKeyChecking=no -i $HOME/secrets/key ${{ env.SSH_CONNECTION }} "docker login -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }} ${{ env.REGISTRY }}"
+          ssh -o StrictHostKeyChecking=no -i $HOME/secrets/key ${{ env.SSH_CONNECTION }} "cd ${{ vars.SERVER_PATH }} && docker-compose pull && docker-compose up -d --force-recreate"
 
 
     
