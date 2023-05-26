@@ -50,17 +50,9 @@ jobs:
           command: |
             docker login -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }} ${{ env.REGISTRY }}
             cd ${{ vars.SERVER_PATH }}
-            docker-compose pull && docker-compose up -d --force-recreate
+            docker compose pull && docker compose up -d --force-recreate
           host: ${{ vars.SERVER_IP }}
           user: ${{ vars.SERVER_USER }}
           key: ${{ secrets.SECRET_KEY }}      
-
-
-      # - name: Deploy to production
-      #   run: | 
-      #     chmod og= $HOME/secrets/key
-      #     ssh -o StrictHostKeyChecking=no -i $HOME/secrets/key ${{ env.SSH_CONNECTION }} "docker login -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }} ${{ env.REGISTRY }}"
-      #     ssh -o StrictHostKeyChecking=no -i $HOME/secrets/key ${{ env.SSH_CONNECTION }} "cd ${{ vars.SERVER_PATH }} && docker-compose pull && docker-compose up -d --force-recreate"
-
 
     
