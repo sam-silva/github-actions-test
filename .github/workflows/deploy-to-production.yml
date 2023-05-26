@@ -20,7 +20,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
       
-      - name: put ssk value in file
+      - name: echo ssh
+        run: echo ${{ secrets.SECRET_KEY }} 
+
+      - name: put ssh value in file
         run: |
           echo "${{ secrets.SECRET_KEY }}" > $HOME/key
           chmod og= $HOME/key
