@@ -1,0 +1,9 @@
+version: '3'
+services:
+  node:
+    image: ghcr.io/sam-silva/github-actions-test:latest
+    expose:
+      - "3000"
+networks:
+  public-web-network:
+    external: true
