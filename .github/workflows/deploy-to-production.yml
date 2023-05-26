@@ -23,8 +23,8 @@ jobs:
       - name: Install SSH Key
         uses: shimataro/ssh-key-action@v2
         with:
-        key: {%- raw -%} ${{ secrets.SECRET_KEY }}
-        known_hosts: 'just-a-placeholder-so-we-dont-get-errors'
+          key: {%- raw -%} ${{ secrets.SECRET_KEY }}
+          known_hosts: 'just-a-placeholder-so-we-dont-get-errors'
 
         - name: Adding Known Hosts
           run: ssh-keyscan -H ${{ secrets.SERVER_IP }}{% endraw%} >> ~/.ssh/known_hosts
