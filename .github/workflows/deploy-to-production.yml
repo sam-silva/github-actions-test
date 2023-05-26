@@ -24,14 +24,24 @@ jobs:
         run: ./.github/decrypt_secret.sh
         env: 
           SECRET_PASSPHRASE: ${{ secrets.SECRET_PASSPHRASE }}
-      
-      - name: Adding Known Hosts
-        run: ssh-keyscan -H ${{ secrets.SERVER_IP }} >> ~/.ssh/known_hosts
 
-      - name: ssh to server
-        run: | 
-          chmod og= $HOME/secrets/key
-          ssh -o StrictHostKeyChecking=no -i $HOME/secrets/key ${{ env.SSH_CONNECTION }} "docker login -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }} ${{ env.REGISTRY }}"
+      - name: ls -a via ssh
+        uses: fifsky/ssh-action@master
+        with:
+          command: |
+            cd /tmp
+            ls -a
+          host: ${{ vars.SERVER_IP }}
+          user: ${{ vars.SERVER_USER }}
+          key: $HOME/secrets/key
+      
+      # - name: Adding Known Hosts
+      #   run: ssh-keyscan -H ${{ secrets.SERVER_IP }} >> ~/.ssh/known_hosts
+
+      # - name: ssh to server
+      #   run: | 
+      #     chmod og= $HOME/secrets/key
+      #     ssh -o StrictHostKeyChecking=no -i $HOME/secrets/key ${{ env.SSH_CONNECTION }} "docker login -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }} ${{ env.REGISTRY }}"
       
 
       # - name: Log in to the Container registry
@@ -54,11 +64,11 @@ jobs:
       # - name: push to registry 
       #   run: docker push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
 
-      - name: Deploy to production
-        run: | 
-          chmod og= $HOME/secrets/key
-          ssh -o StrictHostKeyChecking=no -i $HOME/secrets/key ${{ env.SSH_CONNECTION }} "docker login -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }} ${{ env.REGISTRY }}"
-          ssh -o StrictHostKeyChecking=no -i $HOME/secrets/key ${{ env.SSH_CONNECTION }} "cd ${{ vars.SERVER_PATH }} && docker-compose pull && docker-compose up -d --force-recreate"
+      # - name: Deploy to production
+      #   run: | 
+      #     chmod og= $HOME/secrets/key
+      #     ssh -o StrictHostKeyChecking=no -i $HOME/secrets/key ${{ env.SSH_CONNECTION }} "docker login -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }} ${{ env.REGISTRY }}"
+      #     ssh -o StrictHostKeyChecking=no -i $HOME/secrets/key ${{ env.SSH_CONNECTION }} "cd ${{ vars.SERVER_PATH }} && docker-compose pull && docker-compose up -d --force-recreate"
 
 
     
