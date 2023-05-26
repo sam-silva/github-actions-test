@@ -20,10 +20,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
       
-      - name: run echo ssh
-        run: | 
-          echo "${{ secrets.SECRET_KEY }}"
-
       - name: Decrypt large secret
         run: ./.github/decrypt_secret.sh
         env: 
