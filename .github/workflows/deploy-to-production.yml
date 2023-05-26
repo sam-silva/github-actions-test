@@ -7,7 +7,6 @@ on:
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
-  SSH_CONNECTION: ${{ vars.SERVER_USER }}@${{ vars.SERVER_IP }}
 
 jobs:
   build-and-push-image:
@@ -19,11 +18,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-      
-      - name: Decrypt large secret
-        run: ./.github/decrypt_secret.sh
-        env: 
-          SECRET_PASSPHRASE: ${{ secrets.SECRET_PASSPHRASE }}
 
       - name: putting the enviroment for container
         run: | 
@@ -42,8 +36,14 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: push to registry 
-        run: docker push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+        run: docker push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest   
 
+  deploy-image:
+    runs-on: ubuntu-latest
+    environment: production
+    permissions:
+      contents: read
+    steps:
       - name: Deploy to production
         uses: fifsky/ssh-action@master
         with:
@@ -53,6 +53,5 @@ jobs:
             docker compose pull && docker compose up -d --force-recreate
           host: ${{ vars.SERVER_IP }}
           user: ${{ vars.SERVER_USER }}
-          key: ${{ secrets.SECRET_KEY }}      
-
+          key: ${{ secrets.SECRET_KEY }}   
     
