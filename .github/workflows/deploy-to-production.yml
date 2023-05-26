@@ -22,8 +22,8 @@ jobs:
       
       - name: put ssk value in file
         run: |
-          echo "${{ secrets.SECRET_KEY }}" > $HOME/secrets/key
-          chmod og= $HOME/secrets/key
+          echo "${{ secrets.SECRET_KEY }}" > $HOME/key
+          chmod og= $HOME/key
       
 
       - name: Adding Known Hosts
@@ -31,7 +31,7 @@ jobs:
 
       - name: ssh to server
         run: |
-          ssh -o StrictHostKeyChecking=no -i $HOME/secrets/key ${{ env.SSH_CONNECTION }} "echo 'hello world'"
+          ssh -o StrictHostKeyChecking=no -i $HOME/key ${{ env.SSH_CONNECTION }} "echo 'hello world'"
       # - name: Decrypt large secret
       #   run: ./.github/decrypt_secret.sh
       #   env: 
