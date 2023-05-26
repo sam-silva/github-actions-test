@@ -20,9 +20,9 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
       
-      - name: echo ssh
+      - name: run echo ssh
         run: | 
-          echo ${{ secrets.SECRET_KEY }} 
+          echo "${{ secrets.SECRET_KEY }}"
 
       - name: put ssh value in file
         run: |
