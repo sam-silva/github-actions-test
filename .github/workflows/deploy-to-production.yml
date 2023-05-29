@@ -27,8 +27,8 @@ jobs:
 
       - name: build image 
         run: | 
-        image_name = echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]'
-        docker build -t ${{ env.REGISTRY }}/$image_name:latest -f ./docker/production.dockerfile .
+          image_name = echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]'
+          docker build -t ${{ env.REGISTRY }}/$image_name:latest -f ./docker/production.dockerfile .
 
       - name: Log in to the Container registry
         uses: docker/login-action@v2
@@ -39,8 +39,8 @@ jobs:
 
       - name: push to registry 
         run: | 
-        image_name = echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]'
-        docker push ${{ env.REGISTRY }}/$image_name:latest
+          image_name = echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]'
+          docker push ${{ env.REGISTRY }}/$image_name:latest
 
       - name: Deploy to production
         uses: fifsky/ssh-action@master
